@@ -3,6 +3,7 @@ import styled from "@emotion/styled";
 import image from "./cryptomonedas.png";
 import Form from "./components/Form";
 import Summary from './components/Summary';
+import Spinner from './components/Spinner';
 import axios from 'axios'
 
 const Container = styled.div`
@@ -46,6 +47,8 @@ function App() {
 
   const [change, saveChange] = useState({});
 
+  const [load, saveLoad] = useState(false);
+
 
   useEffect(()=>{
 
@@ -57,10 +60,16 @@ function App() {
 
       const endpoint = await axios.get(url);
 
-      saveChange(endpoint.data.DISPLAY[ecoin][coin]);
+      saveLoad(true);
+      setTimeout(()=>{
+        saveLoad(false);
+        saveChange(endpoint.data.DISPLAY[ecoin][coin]);
+      }, 2000);
+      
     }
     ApiRequest();
   }, [coin, ecoin])
+
 
   return (
     <Container>
@@ -73,7 +82,7 @@ function App() {
           guardarMoneda={saveCoin}
           guardarCriptoMoneda={saveECoin}
         />
-        <Summary change={change}/>
+        {(load) ? <Spinner/> : <Summary change={change}/>}
       </div>
     </Container>
   );
