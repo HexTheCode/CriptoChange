@@ -1,7 +1,9 @@
-import React from "react";
+import React,{useState, useEffect}from "react";
 import styled from "@emotion/styled";
 import image from "./cryptomonedas.png";
 import Form from "./components/Form";
+import Summary from './components/Summary';
+import axios from 'axios'
 
 const Container = styled.div`
   max-width: 900px;
@@ -37,6 +39,29 @@ const Heading = styled.h1`
 `;
 
 function App() {
+
+  const [coin, saveCoin] = useState('');
+  
+  const [ecoin, saveECoin] = useState('');
+
+  const [change, saveChange] = useState({});
+
+
+  useEffect(()=>{
+
+    const ApiRequest = async()=>{
+      if(coin==='') return;
+      // Consultando el api
+
+      const url = `https://min-api.cryptocompare.com/data/pricemultifull?fsyms=${ecoin}&tsyms=${coin}`;
+
+      const endpoint = await axios.get(url);
+
+      saveChange(endpoint.data.DISPLAY[ecoin][coin]);
+    }
+    ApiRequest();
+  }, [coin, ecoin])
+
   return (
     <Container>
       <div>
@@ -44,7 +69,11 @@ function App() {
       </div>
       <div>
         <Heading>Cotiza Criptodivisas al instante</Heading>
-        <Form />
+        <Form
+          guardarMoneda={saveCoin}
+          guardarCriptoMoneda={saveECoin}
+        />
+        <Summary change={change}/>
       </div>
     </Container>
   );

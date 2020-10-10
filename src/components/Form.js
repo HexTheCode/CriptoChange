@@ -23,7 +23,7 @@ const Button = styled.input`
   }
 `;
 
-const Form = () => {
+const Form = ({guardarMoneda, guardarCriptoMoneda}) => {
   // State del listado criptomonedas
 
   const [listcripto, saveListCripto] = useState([]);
@@ -65,6 +65,9 @@ const Form = () => {
       return;
     }
     saveError(false);
+
+    guardarMoneda(coin);
+    guardarCriptoMoneda(ecoins)
   };
 
   return (
